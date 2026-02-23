@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Theme toggle elements
   const themeToggle = document.getElementById("theme-toggle");
-  const themeIcon = themeToggle.querySelector(".theme-icon");
+  const themeIcon = themeToggle ? themeToggle.querySelector(".theme-icon") : null;
 
   // Activity categories with corresponding colors
   const activityTypes = {
@@ -123,6 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Theme toggle functionality
   function initializeTheme() {
+    if (!themeToggle || !themeIcon) return;
+    
     // Check if user has a saved theme preference
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") {
@@ -135,6 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function toggleTheme() {
+    if (!themeIcon) return;
+    
     document.body.classList.toggle("dark-mode");
     
     // Update icon and save preference
@@ -148,7 +152,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Add event listener for theme toggle
-  themeToggle.addEventListener("click", toggleTheme);
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleTheme);
+  }
 
   // Validate user session with the server
   async function validateUserSession(username) {
