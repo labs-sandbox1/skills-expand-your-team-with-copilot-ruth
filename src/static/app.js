@@ -569,6 +569,31 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="social-sharing">
+        <div class="sharing-label">Share this activity:</div>
+        <div class="sharing-buttons">
+          <button class="share-button twitter" data-activity="${name}" title="Share on Twitter">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+            </svg>
+          </button>
+          <button class="share-button facebook" data-activity="${name}" title="Share on Facebook">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </button>
+          <button class="share-button email" data-activity="${name}" title="Share via Email">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+          </button>
+          <button class="share-button copy-link" data-activity="${name}" title="Copy link">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -586,6 +611,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handlers for social sharing buttons
+    const shareButtons = activityCard.querySelectorAll(".share-button");
+    shareButtons.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        handleShare(e, name, details);
+      });
+    });
 
     activitiesList.appendChild(activityCard);
   }
@@ -854,6 +887,47 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  // Handle social sharing
+  function handleShare(event, activityName, details) {
+    const button = event.currentTarget;
+    const shareType = button.classList.contains('twitter') ? 'twitter' :
+                      button.classList.contains('facebook') ? 'facebook' :
+                      button.classList.contains('email') ? 'email' : 'copy';
+    
+    // Build the share URL and text
+    const activityUrl = `${window.location.origin}${window.location.pathname}`;
+    const shareText = `Check out "${activityName}" at Mergington High School! ${details.description}`;
+    const formattedSchedule = formatSchedule(details);
+    
+    switch (shareType) {
+      case 'twitter':
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(activityUrl)}`;
+        window.open(twitterUrl, '_blank', 'width=550,height=420');
+        break;
+      
+      case 'facebook':
+        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(activityUrl)}&quote=${encodeURIComponent(shareText)}`;
+        window.open(facebookUrl, '_blank', 'width=550,height=420');
+        break;
+      
+      case 'email':
+        const emailSubject = `Join me at ${activityName}!`;
+        const emailBody = `Hi!\n\nI wanted to share this activity with you:\n\n${activityName}\n${details.description}\n\nSchedule: ${formattedSchedule}\n\nCheck it out at: ${activityUrl}`;
+        window.location.href = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+        break;
+      
+      case 'copy':
+        // Copy activity information to clipboard
+        const clipboardText = `${activityName}\n${details.description}\nSchedule: ${formattedSchedule}\n\n${activityUrl}`;
+        navigator.clipboard.writeText(clipboardText).then(() => {
+          showMessage('Activity link copied to clipboard!', 'success');
+        }).catch(() => {
+          showMessage('Failed to copy to clipboard', 'error');
+        });
+        break;
+    }
+  }
 
   // Expose filter functions to window for future UI control
   window.activityFilters = {
