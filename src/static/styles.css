@@ -704,41 +704,41 @@ footer {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.share-button.twitter {
+.share-button[data-share-type="twitter"] {
   color: #1DA1F2;
 }
 
-.share-button.twitter:hover {
+.share-button[data-share-type="twitter"]:hover {
   background-color: #1DA1F2;
   color: white;
   border-color: #1DA1F2;
 }
 
-.share-button.facebook {
+.share-button[data-share-type="facebook"] {
   color: #1877F2;
 }
 
-.share-button.facebook:hover {
+.share-button[data-share-type="facebook"]:hover {
   background-color: #1877F2;
   color: white;
   border-color: #1877F2;
 }
 
-.share-button.email {
+.share-button[data-share-type="email"] {
   color: #EA4335;
 }
 
-.share-button.email:hover {
+.share-button[data-share-type="email"]:hover {
   background-color: #EA4335;
   color: white;
   border-color: #EA4335;
 }
 
-.share-button.copy-link {
+.share-button[data-share-type="copy"] {
   color: var(--text-secondary);
 }
 
-.share-button.copy-link:hover {
+.share-button[data-share-type="copy"]:hover {
   background-color: var(--text-secondary);
   color: white;
   border-color: var(--text-secondary);
